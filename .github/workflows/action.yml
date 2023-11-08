@@ -21,20 +21,20 @@ jobs:
           branch="${{ github.event.inputs.branch }}"
           case $branch in
             main)
-              IP_SECRET="VM_MAIN_IP"
-              USER_SECRET="VM_MAIN_USERNAME"
-              PEM_SECRET="VM_MAIN_PEM"
+              HOST="HOST"
+              USERNAME="USERNAME"
+              PEM_KEY="PEM_KEY"
               ;;
-            prod)
-              IP_SECRET="VM_PROD_IP"
-              USER_SECRET="VM_PROD_USERNAME"
-              PEM_SECRET="VM_PROD_PEM"
+            action)
+              HOST="HOST_2"
+              USERNAME="USERNAME_2"
+              PEM_KEY="PEM_KEY_2"
               ;;
             *)
               echo "Invalid branch name: $branch"
               exit 1
               ;;
           esac
-          echo "HOSTNAME_SECRET=$IP_SECRET"
-          echo "USER_SECRET=$USER_SECRET"
-          echo "PEM_KEY_SECRET=$PEM_SECRET"
+          echo "HOST=$HOST"
+          echo "USERNAME=$USERNAME"
+          echo "PEM_KEY=$PEM_KEY"
