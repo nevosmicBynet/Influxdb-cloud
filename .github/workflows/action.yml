@@ -19,12 +19,22 @@ jobs:
         id: set_env
         run: |
           branch="${{ github.event.inputs.branch }}"
-          # Construct secret names based on the branch
-          IP_SECRET="VM_${branch}_IP"
-          USERNAME_SECRET="VM_${branch}_USERNAME"
-          PEM_SECRET="VM_${branch}_PEM"
-
-          echo "Setting environment variables for '$branch' branch"
-          echo "::set-env name=HOSTNAME::${{ secrets[$IP_SECRET] }}"
-          echo "::set-env name=USER::${{ secrets[$USERNAME_SECRET] }}"
-          echo "::set-env name=PEM_KEY::${{ secrets[$PEM_SECRET] }}"
+          case $branch in
+            main)
+              IP_SECRET="VM_MAIN_IP"
+              USER_SECRET="VM_MAIN_USERNAME"
+              PEM_SECRET="VM_MAIN_PEM"
+              ;;
+            prod)
+              IP_SECRET="VM_PROD_IP"
+              USER_SECRET="VM_PROD_USERNAME"
+              PEM_SECRET="VM_PROD_PEM"
+              ;;
+            *)
+              echo "Invalid branch name: $branch"
+              exit 1
+              ;;
+          esac
+          echo "HOSTNAME_SECRET=$IP_SECRET"
+          echo "USER_SECRET=$USER_SECRET"
+          echo "PEM_KEY_SECRET=$PEM_SECRET"
