@@ -18,5 +18,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PEM_KEY }}
         port: 22
-        working-directory: ../../script.sh
-        script: bash script.sh
+        script: bash ../../script.sh
