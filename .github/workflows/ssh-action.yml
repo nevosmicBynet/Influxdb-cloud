@@ -18,4 +18,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PEM_KEY }}
         port: 22
-        script: touch file.txt
+        script: bash script.sh
