@@ -19,5 +19,5 @@ jobs:
         key: ${{ secrets.PEM_KEY }}
         port: 22
         script: |
-        pwd
-        ls
+          pwd
+          ls -al
