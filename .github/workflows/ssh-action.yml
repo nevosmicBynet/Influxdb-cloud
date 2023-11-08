@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       name:
-        description: ''
+        description: '...'
         required: true
         default: '...'
 jobs:
