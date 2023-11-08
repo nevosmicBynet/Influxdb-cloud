@@ -1,4 +1,4 @@
-name: Set Environment Variables
+name: Remote SSH Command
 
 on:
   workflow_dispatch:
@@ -12,23 +12,20 @@ jobs:
     name: Set Environment Variables
     runs-on: ubuntu-latest
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v2
-
       - name: Set Environment Variables
         id: set_env
         run: |
           branch="${{ github.event.inputs.branch }}"
           case $branch in
             main)
-              HOST="HOST"
-              USERNAME="USERNAME"
-              PEM_KEY="PEM_KEY"
+              HOST=$HOST
+              USERNAME=$USERNAME
+              PEM_KEY=$PEM_KEY
               ;;
             action)
-              HOST="HOST_2"
-              USERNAME="USERNAME_2"
-              PEM_KEY="PEM_KEY_2"
+              HOST=$HOST_2
+              USERNAME=$USERNAME_2
+              PEM_KEY=$PEM_KEY_2
               ;;
             *)
               echo "Invalid branch name: $branch"
@@ -38,3 +35,19 @@ jobs:
           echo "HOST=$HOST"
           echo "USERNAME=$USERNAME"
           echo "PEM_KEY=$PEM_KEY"
+
+  execute_remote_command:
+    name: Execute Remote SSH Command
+    runs-on: ubuntu-latest
+    needs: set_env_variables
+    steps:
+      - name: Execute on the Target Server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ env.HOST }}
+          username: ${{ env.USERNAME }}
+          key: ${{ env.PEM_KEY }}
+          port: 22
+          script: |
+            ls
+            bash script.sh
