@@ -11,11 +11,14 @@ jobs:
   execute_remote_command:
     name: Execute Remote SSH Command
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ['action', 'main']
+
     steps:
       - name: Set Environment Variables
         id: set_env
         run: |
-          branches=(action main) # Define the branch names
           branch="${{ github.event.inputs.branch }}"
           
           if [[ "$branch" == "action" ]]; then
@@ -37,7 +40,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ env.HOST }}
-          username: ${{ env.USERNAME }}
+          username: ${{ env.USER }}
           key: ${{ env.PEM_KEY }}
           port: 22
           script: ls
