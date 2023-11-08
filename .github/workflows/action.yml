@@ -34,4 +34,4 @@ jobs:
           key: ${{ env.PEM_KEY }}
           port: 22
           script: |
-            # Your commands to execute on the selected server
+            ls
