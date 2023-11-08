@@ -8,36 +8,39 @@ on:
         required: true
 
 jobs:
-  server_job_1:
-    name: Server 1
+  execute_remote_command:
+    name: Execute Remote SSH Command
     runs-on: ubuntu-latest
-    if: github.event.inputs.branch == 'main' # Replace with your branch name
     steps:
-      - name: Execute on Server 1
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.HOST_1 }}
-          username: ${{ secrets.USERNAME_1 }}
-          key: ${{ secrets.PEM_KEY_1 }}
-          port: 22
-          script: |
-            pwd
-            ls
-            bash script.sh
+      - name: Set Environment Variables
+        id: set_env
+        run: |
+          branches=(action main) # Define the branch names
+          branch="${{ github.event.inputs.branch }}"
+          # Create a map of branch configurations
+          declare -A branch_configs
+          branch_configs["action"]="HOST USERNAME PEM_KEY"
+          branch_configs["main"]="HOST_2 USERNAME_2 PEM_KEY_2"
+          
+          # Set environment variables based on the branch name
+          if [[ "${branches[*]}" =~ "${branch}" ]]; then
+            echo "Setting environment variables for '${branch}' branch"
+            for config_var in ${branch_configs["$branch"]}; do
+              secret_var="${config_var// /_}"
+              echo "$config_var=${{ secrets.${secret_var} }}" >> $GITHUB_ENV
+            done
+          else
+            echo "Invalid branch name: ${branch}"
+            exit 1
+          fi
 
-  server_job_2:
-    name: Server 2
-    runs-on: ubuntu-latest
-    if: github.event.inputs.branch == 'action' # Replace with your branch name
-    steps:
-      - name: Execute on Server 2
+      - name: Execute on the Target Server
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.HOST_2 }}
-          username: ${{ secrets.USERNAME_2 }}
-          key: ${{ secrets.PEM_KEY_2 }}
+          host: ${{ env.HOST }}
+          username: ${{ env.USERNAME }}
+          key: ${{ env.PEM_KEY }}
           port: 22
           script: |
-            pwd
             ls
-            bash script.sh
+            script.sh
