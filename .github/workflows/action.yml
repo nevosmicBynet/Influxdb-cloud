@@ -1,29 +1,3 @@
-#name: remote ssh command
-#on:
-#  workflow_dispatch:
-#    inputs:
-#      name:
-#        description: '...'
-#        required: true
-#        default: '...'
-#jobs:
-#
-#  build:
-#    name: Build
-#    runs-on: ubuntu-latest
-#    steps:
-#    - name: executing remote ssh commands using password
-#      uses: appleboy/ssh-action@v1.0.0
-#      with:
-#        host: ${{ secrets.HOST }}
-#        username: ${{ secrets.USERNAME }}
-#        key: ${{ secrets.PEM_KEY }}
-#        port: 22
-#        script: |
-#          pwd
-#          ls
-#          bash script.sh
-
 name: Remote SSH Command
 
 on:
@@ -42,9 +16,9 @@ jobs:
       - name: Execute on Server 1
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.PEM_KEY }}
+          host: ${{ secrets.HOST_1 }}
+          username: ${{ secrets.USERNAME_1 }}
+          key: ${{ secrets.PEM_KEY_1 }}
           port: 22
           script: |
             pwd
