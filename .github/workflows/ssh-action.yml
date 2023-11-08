@@ -1,7 +1,10 @@
 name: remote ssh command
 on:
   workflow_dispatch:
-  
+  push:
+    branches:
+      - 'action'
+
 jobs:
 
   build:
