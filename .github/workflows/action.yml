@@ -11,28 +11,20 @@ jobs:
   execute_remote_command:
     name: Execute Remote SSH Command
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        branch: ['action', 'main']
+        host: ['HOST', 'HOST_2']
+        username: ['USERNAME', 'USERNAME_2']
+        pem_key: ['PEM_KEY', 'PEM_KEY_2']
+
     steps:
       - name: Set Environment Variables
-        id: set_env
         run: |
-          branches=(action main) # Define the branch names
-          branch="${{ github.event.inputs.branch }}"
-          # Create a map of branch configurations
-          declare -A branch_configs
-          branch_configs["action"]="HOST USERNAME PEM_KEY"
-          branch_configs["main"]="HOST_2 USERNAME_2 PEM_KEY_2"
-          
-          # Set environment variables based on the branch name
-          if [[ "${branches[*]}" =~ "${branch}" ]]; then
-            echo "Setting environment variables for '${branch}' branch"
-            for config_var in ${branch_configs["$branch"]}; do
-              secret_var="${config_var// /_}"
-              echo "$config_var=${{ secrets.${secret_var} }}" >> $GITHUB_ENV
-            done
-          else
-            echo "Invalid branch name: ${branch}"
-            exit 1
-          fi
+          echo "Setting environment variables for ${{ matrix.branch }} branch"
+          echo "HOST=${{ secrets[matrix.host] }}" >> $GITHUB_ENV
+          echo "USER=${{ secrets[matrix.username] }}" >> $GITHUB_ENV
+          echo "PEM_KEY=${{ secrets[matrix.pem_key] }}" >> $GITHUB_ENV
 
       - name: Execute on the Target Server
         uses: appleboy/ssh-action@v1.0.0
@@ -42,5 +34,4 @@ jobs:
           key: ${{ env.PEM_KEY }}
           port: 22
           script: |
-            ls
-            script.sh
+            # Your commands to execute on the selected server
