@@ -18,6 +18,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PEM_KEY }}
         port: 22
-        script: |
-          pwd
-          ls -al
+        script: bash script.sh
